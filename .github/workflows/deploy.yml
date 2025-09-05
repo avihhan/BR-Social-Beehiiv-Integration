@@ -30,8 +30,9 @@ jobs:
       run: |
         gcloud functions deploy beehiiv-integration \
           --runtime=python311 \
-          --trigger=http \
+          --trigger-http \
           --allow-unauthenticated \
           --source=. \
-          --entry-point=main \
+          --entry-point=app \
+          --region=us-central1 \
           --set-env-vars="BEEHIIV_API_KEY=${{ secrets.BEEHIIV_API_KEY }},BEEHIIV_PUBLICATION_ID=${{ secrets.BEEHIIV_PUBLICATION_ID }}"

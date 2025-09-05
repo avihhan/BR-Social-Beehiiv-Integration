@@ -12,10 +12,11 @@ steps:
       - 'deploy'
       - 'beehiiv-integration'
       - '--runtime=python311'
-      - '--trigger=http'
+      - '--trigger-http'
       - '--allow-unauthenticated'
       - '--source=.'
-      - '--entry-point=main'
+      - '--entry-point=app'
+      - '--region=us-central1'
       - '--set-env-vars=BEEHIIV_API_KEY=${_BEEHIIV_API_KEY},BEEHIIV_PUBLICATION_ID=${_BEEHIIV_PUBLICATION_ID}'
 
 substitutions:
