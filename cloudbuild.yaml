@@ -1,0 +1,26 @@
+steps:
+  # Install dependencies
+  - name: 'python:3.11'
+    entrypoint: 'pip'
+    args: ['install', '-r', 'requirements.txt', '-t', '.']
+
+  # Deploy to Cloud Functions
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'functions'
+      - 'deploy'
+      - 'beehiiv-integration'
+      - '--runtime=python311'
+      - '--trigger=http'
+      - '--allow-unauthenticated'
+      - '--source=.'
+      - '--entry-point=main'
+      - '--set-env-vars=BEEHIIV_API_KEY=${_BEEHIIV_API_KEY},BEEHIIV_PUBLICATION_ID=${_BEEHIIV_PUBLICATION_ID}'
+
+substitutions:
+  _BEEHIIV_API_KEY: 'your_beehiiv_api_key_here'
+  _BEEHIIV_PUBLICATION_ID: 'your_publication_id_here'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
