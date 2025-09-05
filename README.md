@@ -5,6 +5,7 @@ A Python backend service that integrates with the Beehiiv API to handle email su
 ## Features
 
 - ✅ Subscribe users to Beehiiv newsletter via API
+- 
 - ✅ Send welcome emails automatically through Beehiiv
 - ✅ Handle existing subscribers gracefully
 - ✅ RESTful API endpoints
