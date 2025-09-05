@@ -1,34 +1,15 @@
 steps:
-  # Build Docker image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'build',
-      '-t', 'gcr.io/$PROJECT_ID/beehiiv-integration:$COMMIT_SHA',
-      '-t', 'gcr.io/$PROJECT_ID/beehiiv-integration:latest',
-      '.'
-    ]
-
-  # Push Docker image to Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/beehiiv-integration:$COMMIT_SHA']
-
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/beehiiv-integration:latest']
-
-  # Deploy to Cloud Functions using Docker image
+  # Deploy to Cloud Run directly from source
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args:
-      - 'functions'
+      - 'run'
       - 'deploy'
       - 'beehiiv-integration'
-      - '--gen2'
-      - '--runtime=python311'
-      - '--trigger-http'
-      - '--allow-unauthenticated'
       - '--source=.'
-      - '--entry-point=app_handler'
       - '--region=us-central1'
+      - '--allow-unauthenticated'
+      - '--port=8080'
       - '--set-env-vars=BEEHIIV_API_KEY=${_BEEHIIV_API_KEY},BEEHIIV_PUBLICATION_ID=${_BEEHIIV_PUBLICATION_ID}'
 
 substitutions:
@@ -37,3 +18,7 @@ substitutions:
 
 options:
   logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+
+# Use custom service account for builds
+serviceAccount: 'projects/brsocial/serviceAccounts/br-social-subscriber-pipeline@brsocial.iam.gserviceaccount.com'
