@@ -26,7 +26,6 @@ steps:
       - '--region=us-central1'
       - '--allow-unauthenticated'
       - '--port=8080'
-      - '--set-env-vars=BEEHIIV_API_KEY=${_BEEHIIV_API_KEY},BEEHIIV_PUBLICATION_ID=${_BEEHIIV_PUBLICATION_ID}'
 
 substitutions:
   _BEEHIIV_API_KEY: 'your_beehiiv_api_key_here'
