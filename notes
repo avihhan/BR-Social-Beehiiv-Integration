@@ -1,0 +1,7 @@
+curl -X POST "https://br-social-beehiiv-integration-298391770247.us-central1.run.app" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "test@example.com",
+    "first_name": "Test",
+    "last_name": "User"
+  }'
