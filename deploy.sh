@@ -36,18 +36,15 @@ docker build -t $IMAGE_NAME:latest .
 echo "📤 Pushing image to Container Registry..."
 docker push $IMAGE_NAME:latest
 
-# Deploy to Cloud Functions
-echo "🚀 Deploying to Cloud Functions..."
-gcloud functions deploy $FUNCTION_NAME \
-    --gen2 \
-    --runtime=python311 \
-    --trigger-http \
-    --allow-unauthenticated \
+# Deploy to Cloud Run
+echo "🚀 Deploying to Cloud Run..."
+gcloud run deploy $FUNCTION_NAME \
     --source=. \
-    --entry-point=app_handler \
     --region=$REGION \
+    --allow-unauthenticated \
+    --port=8080 \
     --set-env-vars="BEEHIIV_API_KEY=$BEEHIIV_API_KEY,BEEHIIV_PUBLICATION_ID=$BEEHIIV_PUBLICATION_ID"
 
 echo "✅ Deployment completed successfully!"
-echo "🌐 Your function is available at:"
-gcloud functions describe $FUNCTION_NAME --region=$REGION --format="value(serviceConfig.uri)"
+echo "🌐 Your service is available at:"
+gcloud run services describe $FUNCTION_NAME --region=$REGION --format="value(status.url)"

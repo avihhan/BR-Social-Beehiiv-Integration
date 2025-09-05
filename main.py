@@ -181,8 +181,5 @@ async def get_publication_info():
             detail="Internal server error"
         )
 
-# Cloud Functions entry point
-def app_handler(request):
-    """Entry point for Google Cloud Functions"""
-    from functions_framework import create_app
-    return create_app("app_handler")
+# Cloud Run entry point (no special function needed)
+# The FastAPI app is served directly by uvicorn

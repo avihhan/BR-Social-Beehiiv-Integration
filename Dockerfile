@@ -24,5 +24,5 @@ USER app
 # Expose the port that the app runs on
 EXPOSE 8080
 
-# Set the entry point for Cloud Functions
-ENTRYPOINT ["python", "-m", "functions_framework", "--target=app_handler", "--port=8080"]
+# Set the entry point for Cloud Run
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
