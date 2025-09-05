@@ -29,13 +29,24 @@ jobs:
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
 
+    - name: Build Docker image
+      run: |
+        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/beehiiv-integration:${{ github.sha }} .
+        docker tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/beehiiv-integration:${{ github.sha }} gcr.io/${{ secrets.GCP_PROJECT_ID }}/beehiiv-integration:latest
+
+    - name: Push Docker image
+      run: |
+        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/beehiiv-integration:${{ github.sha }}
+        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/beehiiv-integration:latest
+
     - name: Deploy to Cloud Functions
       run: |
         gcloud functions deploy beehiiv-integration \
+          --gen2 \
           --runtime=python311 \
           --trigger-http \
           --allow-unauthenticated \
           --source=. \
-          --entry-point=app \
+          --entry-point=app_handler \
           --region=us-central1 \
           --set-env-vars="BEEHIIV_API_KEY=${{ secrets.BEEHIIV_API_KEY }},BEEHIIV_PUBLICATION_ID=${{ secrets.BEEHIIV_PUBLICATION_ID }}"

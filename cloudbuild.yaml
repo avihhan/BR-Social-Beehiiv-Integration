@@ -1,21 +1,33 @@
 steps:
-  # Install dependencies
-  - name: 'python:3.11'
-    entrypoint: 'pip'
-    args: ['install', '-r', 'requirements.txt', '-t', '.']
+  # Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'gcr.io/$PROJECT_ID/beehiiv-integration:$COMMIT_SHA',
+      '-t', 'gcr.io/$PROJECT_ID/beehiiv-integration:latest',
+      '.'
+    ]
 
-  # Deploy to Cloud Functions
+  # Push Docker image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/beehiiv-integration:$COMMIT_SHA']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/beehiiv-integration:latest']
+
+  # Deploy to Cloud Functions using Docker image
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args:
       - 'functions'
       - 'deploy'
       - 'beehiiv-integration'
+      - '--gen2'
       - '--runtime=python311'
       - '--trigger-http'
       - '--allow-unauthenticated'
       - '--source=.'
-      - '--entry-point=app'
+      - '--entry-point=app_handler'
       - '--region=us-central1'
       - '--set-env-vars=BEEHIIV_API_KEY=${_BEEHIIV_API_KEY},BEEHIIV_PUBLICATION_ID=${_BEEHIIV_PUBLICATION_ID}'
 

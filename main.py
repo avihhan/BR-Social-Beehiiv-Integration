@@ -182,7 +182,7 @@ async def get_publication_info():
         )
 
 # Cloud Functions entry point
-def main(request):
+def app_handler(request):
     """Entry point for Google Cloud Functions"""
     from functions_framework import create_app
     return create_app(app)
