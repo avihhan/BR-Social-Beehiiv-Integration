@@ -1,12 +1,28 @@
 steps:
-  # Deploy to Cloud Run directly from source
+  # Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'gcr.io/$PROJECT_ID/beehiiv-integration:$BUILD_ID',
+      '-t', 'gcr.io/$PROJECT_ID/beehiiv-integration:latest',
+      '.'
+    ]
+
+  # Push Docker image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/beehiiv-integration:$BUILD_ID']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/beehiiv-integration:latest']
+
+  # Deploy to Cloud Run using Docker image
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args:
       - 'run'
       - 'deploy'
       - 'beehiiv-integration'
-      - '--source=.'
+      - '--image=gcr.io/$PROJECT_ID/beehiiv-integration:$BUILD_ID'
       - '--region=us-central1'
       - '--allow-unauthenticated'
       - '--port=8080'

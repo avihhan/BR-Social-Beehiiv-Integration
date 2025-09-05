@@ -76,3 +76,8 @@ test_*.py
 
 # GitHub
 .github/
+
+# Deployment files
+cloudbuild.yaml
+deploy.sh
+dev.sh
